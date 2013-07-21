@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -12,51 +11,59 @@ namespace Watchman_Client
 {
     public partial class Form1 : Form
     {
-        private string command = null;
-        private int maxDataBuffer = int.MaxValue ;
-        private Socket _clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        private string _command;
+        private const int MaxDataBuffer = 2000000;
+        private readonly Socket _clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         
         public Form1()
         {
             InitializeComponent();
-            
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             ConnectionLoop();
         }
+        private void button2_Click(object sender, EventArgs e)
+        {
+            _command = commandComboBox.GetItemText(commandComboBox.SelectedItem);
+            SendLoop();
+        }
 
+        #region Functions
         private void SendLoop()
         {
             try
             {
-                byte[] buffer = Encoding.ASCII.GetBytes(command);
+                byte[] buffer = Encoding.ASCII.GetBytes(_command);
                 _clientSocket.Send(buffer);
 
 
-                byte[] receiveBuffer = new byte[500000];
+                byte[] receiveBuffer = new byte[MaxDataBuffer];
                 
                 //Size is first received
                 int length = _clientSocket.Receive(receiveBuffer);
                 byte[] data = new byte[length];
                 Array.Copy(receiveBuffer, data, data.Length);
 
-                if (command == "Screen Capture")
+                if (_command == "Screen Capture")
                 {
                     TypeConverter tc = TypeDescriptor.GetConverter(typeof(Bitmap));
                     //parameter not valid
                     using (Image image = (Bitmap)tc.ConvertFrom(data))
                     {
-                        Image clonedImg = new Bitmap(image.Width, image.Height, PixelFormat.Format32bppArgb);
-                        using (var copy = Graphics.FromImage(clonedImg))
+                        if (image != null)
                         {
-                            copy.DrawImage(image, 0, 0);
+                            Image clonedImg = new Bitmap(image.Width, image.Height, PixelFormat.Format32bppArgb);
+                            using (var copy = Graphics.FromImage(clonedImg))
+                            {
+                                copy.DrawImage(image, 0, 0);
+                            }
+                            screenCapturePictureBox.Width = image.Width;
+                            screenCapturePictureBox.Height = image.Height;
+                            screenCapturePictureBox.InitialImage = null;
+                            screenCapturePictureBox.Image = clonedImg;
                         }
-                        screenCapturePictureBox.Width = image.Width;
-                        screenCapturePictureBox.Height = image.Height;
-                        screenCapturePictureBox.InitialImage = null;
-                        screenCapturePictureBox.Image = clonedImg;
                     }
 
                 }
@@ -78,19 +85,16 @@ namespace Watchman_Client
             {
                 try
                 {
-                    _clientSocket.Connect(IPAddress.Loopback, 9000);
+                    _clientSocket.Connect(IPAddress.Parse(ipAddressTextBox.Text), 9000);
                 }
-                catch (SocketException)
+                catch (Exception ex)
                 {
+                    MessageBox.Show(ex.Message);
                 }
             }
             connectButton.Text = "Connected";
         }
+        #endregion 
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            command = commandComboBox.GetItemText(commandComboBox.SelectedItem);
-            SendLoop();
-        }
     }
 }
