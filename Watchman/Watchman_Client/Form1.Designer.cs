@@ -33,7 +33,6 @@
             this.sendCommandButton = new System.Windows.Forms.Button();
             this.commandComboBox = new System.Windows.Forms.ComboBox();
             this.dataLabel = new System.Windows.Forms.Label();
-            this.screenCaptureLabel = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.screenCapturePictureBox = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -92,22 +91,17 @@
             this.dataLabel.TabIndex = 4;
             this.dataLabel.Text = "Data";
             // 
-            // screenCaptureLabel
-            // 
-            this.screenCaptureLabel.AutoSize = true;
-            this.screenCaptureLabel.Location = new System.Drawing.Point(286, 9);
-            this.screenCaptureLabel.Name = "screenCaptureLabel";
-            this.screenCaptureLabel.Size = new System.Drawing.Size(81, 13);
-            this.screenCaptureLabel.TabIndex = 6;
-            this.screenCaptureLabel.Text = "Screen Capture";
-            // 
             // panel1
             // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.AutoScroll = true;
             this.panel1.Controls.Add(this.screenCapturePictureBox);
-            this.panel1.Location = new System.Drawing.Point(289, 33);
+            this.panel1.Location = new System.Drawing.Point(301, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(410, 337);
+            this.panel1.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
+            this.panel1.Size = new System.Drawing.Size(442, 377);
             this.panel1.TabIndex = 7;
             // 
             // screenCapturePictureBox
@@ -157,13 +151,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(711, 382);
+            this.ClientSize = new System.Drawing.Size(738, 377);
             this.Controls.Add(this.portTextBox);
             this.Controls.Add(this.ipAddressTextBox);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.panel1);
-            this.Controls.Add(this.screenCaptureLabel);
             this.Controls.Add(this.dataLabel);
             this.Controls.Add(this.commandComboBox);
             this.Controls.Add(this.sendCommandButton);
@@ -186,7 +179,6 @@
         private System.Windows.Forms.Button sendCommandButton;
         private System.Windows.Forms.ComboBox commandComboBox;
         private System.Windows.Forms.Label dataLabel;
-        private System.Windows.Forms.Label screenCaptureLabel;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.PictureBox screenCapturePictureBox;
         private System.Windows.Forms.Label label1;

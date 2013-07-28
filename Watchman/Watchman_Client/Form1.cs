@@ -5,6 +5,7 @@ using System.Drawing.Imaging;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Watchman_Client
@@ -12,7 +13,6 @@ namespace Watchman_Client
     public partial class Form1 : Form
     {
         private string _command;
-        private const int MaxDataBuffer = 2000000;
         private readonly Socket _clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         
         public Form1()
@@ -35,16 +35,23 @@ namespace Watchman_Client
         {
             try
             {
+                //Covert string command to bytes
                 byte[] buffer = Encoding.ASCII.GetBytes(_command);
                 _clientSocket.Send(buffer);
 
+                //Wait 1 sec after sending command for proper reply
+                Thread.Sleep(1000);
+                //Peek into the socket for the data size
+                byte[] size = new byte[4];
+                _clientSocket.Receive(size, 4, SocketFlags.Peek);
+                //Covert the size to integer
+                int intSize = BitConverter.ToInt32(size, 0);
 
-                byte[] receiveBuffer = new byte[MaxDataBuffer];
-                
-                //Size is first received
-                int length = _clientSocket.Receive(receiveBuffer);
-                byte[] data = new byte[length];
-                Array.Copy(receiveBuffer, data, data.Length);
+                //Initialize a buffer for incoming data
+                byte[] receiveBuffer = new byte[intSize+size.Length];
+                _clientSocket.Receive(receiveBuffer);
+                byte[] data = new byte[intSize];
+                Array.Copy(receiveBuffer, 4, data, 0, intSize);
 
                 if (_command == "Screen Capture")
                 {
@@ -76,6 +83,7 @@ namespace Watchman_Client
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+                screenCapturePictureBox.Image = null;
             }
         }
 
