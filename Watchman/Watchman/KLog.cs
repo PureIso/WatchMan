@@ -144,8 +144,18 @@ namespace Watchman
 
         public static byte[] RemoteTakeScreen()
         {
-            ImageConverter converter = new ImageConverter();
-            return (byte[])converter.ConvertTo(BitMapCreater(), typeof(byte[]));
+            try
+            {
+                ImageConverter converter = new ImageConverter();
+                byte[] data = (byte[])converter.ConvertTo(BitMapCreater(), typeof(byte[]));
+                Image img = (Image)converter.ConvertFrom(data);
+                if(img != null)img.Dispose();
+                return data;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public void Log()

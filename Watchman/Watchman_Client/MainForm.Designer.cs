@@ -1,6 +1,6 @@
 ﻿namespace Watchman_Client
 {
-    partial class Form1
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -33,13 +33,13 @@
             this.sendCommandButton = new System.Windows.Forms.Button();
             this.commandComboBox = new System.Windows.Forms.ComboBox();
             this.dataLabel = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.screenCapturePictureBox = new System.Windows.Forms.PictureBox();
+            this.mainPanel = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.ipAddressTextBox = new System.Windows.Forms.TextBox();
             this.portTextBox = new System.Windows.Forms.TextBox();
-            this.panel1.SuspendLayout();
+            this.screenCapturePictureBox = new System.Windows.Forms.PictureBox();
+            this.mainPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.screenCapturePictureBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -91,27 +91,18 @@
             this.dataLabel.TabIndex = 4;
             this.dataLabel.Text = "Data";
             // 
-            // panel1
+            // mainPanel
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.mainPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel1.AutoScroll = true;
-            this.panel1.Controls.Add(this.screenCapturePictureBox);
-            this.panel1.Location = new System.Drawing.Point(301, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
-            this.panel1.Size = new System.Drawing.Size(442, 377);
-            this.panel1.TabIndex = 7;
-            // 
-            // screenCapturePictureBox
-            // 
-            this.screenCapturePictureBox.Location = new System.Drawing.Point(3, 3);
-            this.screenCapturePictureBox.Name = "screenCapturePictureBox";
-            this.screenCapturePictureBox.Size = new System.Drawing.Size(404, 331);
-            this.screenCapturePictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.screenCapturePictureBox.TabIndex = 6;
-            this.screenCapturePictureBox.TabStop = false;
+            this.mainPanel.AutoScroll = true;
+            this.mainPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.mainPanel.Controls.Add(this.screenCapturePictureBox);
+            this.mainPanel.Location = new System.Drawing.Point(278, 0);
+            this.mainPanel.Name = "mainPanel";
+            this.mainPanel.Size = new System.Drawing.Size(448, 377);
+            this.mainPanel.TabIndex = 7;
             // 
             // label1
             // 
@@ -147,7 +138,17 @@
             this.portTextBox.TabIndex = 11;
             this.portTextBox.Text = "9000";
             // 
-            // Form1
+            // screenCapturePictureBox
+            // 
+            this.screenCapturePictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.screenCapturePictureBox.Location = new System.Drawing.Point(0, 0);
+            this.screenCapturePictureBox.Name = "screenCapturePictureBox";
+            this.screenCapturePictureBox.Size = new System.Drawing.Size(446, 375);
+            this.screenCapturePictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.screenCapturePictureBox.TabIndex = 6;
+            this.screenCapturePictureBox.TabStop = false;
+            // 
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -156,16 +157,15 @@
             this.Controls.Add(this.ipAddressTextBox);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.mainPanel);
             this.Controls.Add(this.dataLabel);
             this.Controls.Add(this.commandComboBox);
             this.Controls.Add(this.sendCommandButton);
             this.Controls.Add(this.dataTextBox);
             this.Controls.Add(this.connectButton);
-            this.Name = "Form1";
-            this.Text = "Form1";
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
+            this.Name = "MainForm";
+            this.Text = "Watchman - Desktop Monitor Client";
+            this.mainPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.screenCapturePictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -179,12 +179,12 @@
         private System.Windows.Forms.Button sendCommandButton;
         private System.Windows.Forms.ComboBox commandComboBox;
         private System.Windows.Forms.Label dataLabel;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.PictureBox screenCapturePictureBox;
+        private System.Windows.Forms.Panel mainPanel;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox ipAddressTextBox;
         private System.Windows.Forms.TextBox portTextBox;
+        private System.Windows.Forms.PictureBox screenCapturePictureBox;
     }
 }
 
